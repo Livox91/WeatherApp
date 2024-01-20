@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import '../widgets/MainScreenWidget.dart';
+import '../../domain/entities/weather.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final Weather weatherData;
+  const HomePage({super.key, required this.weatherData});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Stack(
         children: [
-          Screen(),
-          MenuBtn(),
+          Screen(
+            weatherData: weatherData,
+          ),
+          const MenuBtn(),
         ],
       ),
     );
@@ -18,7 +22,8 @@ class HomePage extends StatelessWidget {
 }
 
 class Screen extends StatelessWidget {
-  const Screen({super.key});
+  final Weather weatherData;
+  const Screen({super.key, required this.weatherData});
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +32,19 @@ class Screen extends StatelessWidget {
         color: const Color(0xff363062),
         width: screenSize.width,
         height: screenSize.height,
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            UpperSection(),
-            LowerSection(),
+            UpperSection(weatherData: weatherData),
+            LowerSection(weatherData: weatherData),
           ],
         ));
   }
 }
 
 class UpperSection extends StatelessWidget {
-  const UpperSection({super.key});
+  final Weather weatherData;
+  const UpperSection({super.key, required this.weatherData});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +52,7 @@ class UpperSection extends StatelessWidget {
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const CityName(cityName: "Karachi"),
+        CityName(cityName: weatherData.locationDetail.city),
         const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -66,13 +72,14 @@ class UpperSection extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 20, 0),
                 child: Image.asset(
-                  "lib/images/orange-cloud.png",
+                  "assets/images/orange-cloud.png",
                   height: 64,
                   width: 64,
                 )),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-              child: MW600F40(text: "10°C"),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+              child:
+                  MW600F40(text: "${weatherData.weatherDetails.temperature}°C"),
             )
           ],
         )
@@ -82,38 +89,40 @@ class UpperSection extends StatelessWidget {
 }
 
 class LowerSection extends StatelessWidget {
-  const LowerSection({super.key});
+  final Weather weatherData;
+  const LowerSection({super.key, required this.weatherData});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.fromLTRB(15, 0, 0, 0),
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
             child: LColoumn(
-                imagePath: "lib/images/orange-cloud.png",
+                imagePath: "assets/images/orange-moon.png",
                 text: "Sunrise",
-                text2: "7:00"),
+                text2:
+                    "${weatherData.time.sunrise.hour}:${weatherData.time.sunrise.minute}"),
           ),
-          CDivider(),
+          const CDivider(),
           Padding(
-            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
             child: LColoumn(
-                imagePath: "lib/images/orange-cloud.png",
+                imagePath: "assets/images/orange-Barometer.png",
                 text: "Wind",
-                text2: "4m/s"),
+                text2: "${weatherData.weatherDetails.windSpeed}m/s"),
           ),
-          CDivider(),
+          const CDivider(),
           Padding(
-            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
             child: LColoumn(
-                imagePath: "lib/images/orange-cloud.png",
-                text: "Tempreture",
-                text2: "10°"),
+                imagePath: "assets/images/orange-thermometer.png",
+                text: "humidity",
+                text2: "${weatherData.weatherDetails.humidity}%"),
           ),
         ],
       ),
