@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domain/entities/weather.dart';
+import 'package:flutter_application_1/presentation/blocs/bloc/main_bloc.dart';
 import 'package:flutter_application_1/presentation/screens/MainScreen.dart';
-import './data/repository/weather_Repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import './presentation/screens/LoadingScreen.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: Main(),
+  runApp(MaterialApp(
+    home: BlocProvider(
+      create: (context) => MainBloc(),
+      child: const Main(),
+    ),
   ));
 }
 
 class Main extends StatelessWidget {
-  const Main({Key? key}) : super(key: key);
+  const Main({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Weather>(
-        future: WeatherRepository.getWeatherData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+    final MainBloc mainBloc = BlocProvider.of<MainBloc>(context);
+    return BlocConsumer<MainBloc, MainState>(
+        builder: (context, state) {
+          if (state is MainLoadingState) {
+            mainBloc.add(const MainEvent("Karachi", "Pk"));
             return const LoadingScreen();
-          } else if (snapshot.hasError) {
+          } else if (state is MainErrorState) {
             return const Text("Error");
+          } else if (state is MainDataState) {
+            return HomePage(weatherData: state.currentWeather);
           } else {
-            Weather weatherData = snapshot.data!;
-            return HomePage(
-              weatherData: weatherData,
-            );
+            return const Text("No Data");
           }
-        });
+        },
+        listener: (context, state) {});
   }
 }

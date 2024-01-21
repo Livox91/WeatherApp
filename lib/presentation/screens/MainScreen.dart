@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/MainScreenWidget.dart';
 import '../../domain/entities/weather.dart';
@@ -9,12 +10,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const SidePanel(),
       body: Stack(
         children: [
           Screen(
             weatherData: weatherData,
           ),
           const MenuBtn(),
+          const Btn()
         ],
       ),
     );
@@ -28,17 +31,20 @@ class Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return Container(
-        color: const Color(0xff363062),
-        width: screenSize.width,
-        height: screenSize.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            UpperSection(weatherData: weatherData),
-            LowerSection(weatherData: weatherData),
-          ],
-        ));
+    return Scaffold(
+      drawer: const Drawer(),
+      body: Container(
+          color: const Color(0xff363062),
+          width: screenSize.width,
+          height: screenSize.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              UpperSection(weatherData: weatherData),
+              LowerSection(weatherData: weatherData),
+            ],
+          )),
+    );
   }
 }
 
@@ -48,21 +54,26 @@ class UpperSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    String dayOfWeek = _getDayOfWeek(now.weekday);
+
     return Expanded(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CityName(cityName: weatherData.locationDetail.city),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.all(5.0),
-              child: MW600F18(text: "Monday"),
+              padding: const EdgeInsets.all(5.0),
+              child: MW600F18(text: dayOfWeek),
             ),
             Padding(
-              padding: EdgeInsets.all(5.0),
-              child: MW600F18(text: "7:00PM"),
+              padding: const EdgeInsets.all(5.0),
+              child: MW600F18(
+                  text:
+                      '${_formatNumber(now.hour)}:${_formatNumber(now.minute)}'),
             ),
           ],
         ),
@@ -85,6 +96,31 @@ class UpperSection extends StatelessWidget {
         )
       ],
     ));
+  }
+
+  String _formatNumber(int number) {
+    return number.toString().padLeft(2, '0');
+  }
+
+  String _getDayOfWeek(int day) {
+    switch (day) {
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Tuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      case 7:
+        return 'Sunday';
+      default:
+        return '';
+    }
   }
 }
 

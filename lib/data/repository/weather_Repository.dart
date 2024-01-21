@@ -2,8 +2,9 @@ import 'package:flutter_application_1/domain/entities/weather.dart';
 import '../data_source/weather_API.dart';
 
 class WeatherRepository {
-  static Future<Weather> getWeatherData() async {
-    final APIData = await WeatherAPI().getWeatherData();
+  static Future<Weather> getWeatherData(
+      {String city = "Karachi", String country = "pk"}) async {
+    final APIData = await WeatherAPI().getWeatherData(city, country);
 
     var weatherDet = APIData['main'];
     final windSpeed = APIData['wind']['speed'];
@@ -11,9 +12,9 @@ class WeatherRepository {
 
     final weatherDetail = CurrentWeather(
         condition: conditions,
-        humidity: weatherDet['humidity'],
+        humidity: weatherDet['humidity'].toInt(),
         temperature: weatherDet['temp'].toInt(),
-        windSpeed: windSpeed);
+        windSpeed: windSpeed.toDouble());
 
     final locationDet = APIData['coord'];
 
