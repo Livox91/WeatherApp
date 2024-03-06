@@ -1,34 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/presentation/blocs/bloc/main_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dart_casing/dart_casing.dart';
 
-class SText extends StatelessWidget {
-  final String text;
-  final String fontFamily;
-  final double fontSize;
-  final Color color;
-  final FontWeight fontWeight;
-
-  const SText(
-      {super.key,
-      required this.text,
-      this.fontFamily = 'Montserrat',
-      this.fontSize = 20.0,
-      this.color = const Color(0xffF99417),
-      this.fontWeight = FontWeight.w400});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text,
-        style: TextStyle(
-          fontFamily: fontFamily,
-          fontSize: fontSize,
-          color: color,
-          fontWeight: fontWeight,
-        ));
-  }
-}
+import 'main_screen_drawer.dart';
+import 'text_widget.dart';
+import 'divider_widget.dart';
 
 class MenuBtn extends StatelessWidget {
   const MenuBtn({super.key});
@@ -61,93 +36,6 @@ class CityName extends StatelessWidget {
   }
 }
 
-class MW400F12 extends StatelessWidget {
-  final String text;
-  const MW400F12({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return SText(
-      text: text,
-      fontWeight: FontWeight.w400,
-      fontSize: 12,
-    );
-  }
-}
-
-class MW600F18 extends StatelessWidget {
-  final String text;
-  const MW600F18({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return SText(
-      text: text,
-      fontWeight: FontWeight.w600,
-      fontSize: 18,
-    );
-  }
-}
-
-class MW600F40 extends StatelessWidget {
-  final String text;
-  const MW600F40({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return SText(
-      text: text,
-      fontSize: 40,
-      fontWeight: FontWeight.w600,
-    );
-  }
-}
-
-class DSW400F25 extends StatelessWidget {
-  final String text;
-  const DSW400F25({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return SText(
-      text: text,
-      fontFamily: 'DancingScript',
-      fontWeight: FontWeight.w400,
-      fontSize: 25,
-    );
-  }
-}
-
-class CDivider extends StatelessWidget {
-  const CDivider({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Text("I",
-        style: TextStyle(
-          fontFamily: 'Montserrat',
-          fontWeight: FontWeight.w400,
-          color: Color(0xfff99417),
-          fontSize: 80,
-        ));
-  }
-}
-
-class RDivider extends StatelessWidget {
-  const RDivider({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Text("_________________________",
-        style: TextStyle(
-          fontFamily: 'Montserrat',
-          fontWeight: FontWeight.w800,
-          color: Color(0xfff99417),
-          fontSize: 20,
-        ));
-  }
-}
-
 class LColoumn extends StatelessWidget {
   final String imagePath;
   final String text;
@@ -175,61 +63,6 @@ class LColoumn extends StatelessWidget {
         DSW400F25(text: text2)
       ],
     );
-  }
-}
-
-List<Widget> dynamicWidget = [
-  const DrawerHeader(
-    child: DSW400F25(text: "Cities"),
-  ),
-  const Tile(text1: "Karachi", text2: "Pakistan"),
-  const RDivider()
-];
-
-class SidePanel extends StatefulWidget {
-  const SidePanel({super.key});
-
-  @override
-  State<SidePanel> createState() => _SidePanelState();
-}
-
-class _SidePanelState extends State<SidePanel> {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: const Color(0xff363062),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 20, 0, 0),
-        child: Column(children: dynamicWidget),
-      ),
-    );
-  }
-}
-
-class Tile extends StatefulWidget {
-  final String text1;
-  final String text2;
-
-  const Tile({
-    super.key,
-    required this.text1,
-    required this.text2,
-  });
-
-  @override
-  State<Tile> createState() => _TileState();
-}
-
-class _TileState extends State<Tile> {
-  _TileState();
-  @override
-  Widget build(BuildContext context) {
-    final MainBloc mainBloc = BlocProvider.of<MainBloc>(context);
-    return ListTile(
-        title: MW600F18(text: widget.text1),
-        onTap: () {
-          mainBloc.add(MainEvent(widget.text1, widget.text2));
-        });
   }
 }
 

@@ -1,5 +1,5 @@
 import 'package:flutter_application_1/domain/entities/weather.dart';
-import '../data_source/weather_API.dart';
+import '../data_source/weather_api.dart';
 
 class WeatherRepository {
   static Future<Weather> getWeatherData(

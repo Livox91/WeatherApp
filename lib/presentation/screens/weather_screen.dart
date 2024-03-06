@@ -1,6 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets/MainScreenWidget.dart';
+
+import '../widgets/main_screen_drawer.dart';
+import '../widgets/divider_widget.dart';
+import '../widgets/text_widget.dart';
+import '../widgets/main_screen_widgets.dart';
 import '../../domain/entities/weather.dart';
 
 class HomePage extends StatelessWidget {
