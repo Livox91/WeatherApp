@@ -23,6 +23,7 @@ class SText extends StatelessWidget {
           fontSize: fontSize,
           color: color,
           fontWeight: fontWeight,
+          decoration: TextDecoration.none,
         ));
   }
 }

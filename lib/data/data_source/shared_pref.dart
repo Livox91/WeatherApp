@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesRepository {
+class SharedPreferencesApi {
   static const String firstTime = "key";
 
   Future<bool> isFirstTimeUser() async {

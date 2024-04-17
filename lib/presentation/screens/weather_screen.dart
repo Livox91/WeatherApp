@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
+//Widgets
 import '../widgets/main_screen_drawer.dart';
 import '../widgets/divider_widget.dart';
 import '../widgets/text_widget.dart';
 import '../widgets/main_screen_widgets.dart';
+//Domain
 import '../../domain/entities/weather.dart';
 
 class HomePage extends StatelessWidget {
@@ -37,16 +38,17 @@ class Screen extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(),
       body: Container(
-          color: const Color(0xff363062),
-          width: screenSize.width,
-          height: screenSize.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              UpperSection(weatherData: weatherData),
-              LowerSection(weatherData: weatherData),
-            ],
-          )),
+        color: const Color(0xff363062),
+        width: screenSize.width,
+        height: screenSize.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            UpperSection(weatherData: weatherData),
+            LowerSection(weatherData: weatherData),
+          ],
+        ),
+      ),
     );
   }
 }

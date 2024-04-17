@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/presentation/blocs/weather_state_bloc/main_bloc.dart';
 //screens
 import 'package:flutter_application_1/presentation/screens/logo_screen.dart';
+import 'package:flutter_application_1/presentation/screens/first_time_screen.dart';
 import 'package:flutter_application_1/presentation/screens/weather_screen.dart';
 //BloCs
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_application_1/presentation/blocs/new_user_setup_bloc/new_user_setup_bloc.dart';
+import 'package:flutter_application_1/presentation/blocs/user_state_bloc/user_state.dart';
 
 void main() => runApp(const MyApp());
 
@@ -17,8 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: BlocProvider(
-      create: (context) => MainBloc(),
-      child: const Main(),
+      create: (context) => FirstTimeSetupBloc(),
+      child: const FirstTimeWidget(),
     ));
   }
 }
@@ -60,10 +61,12 @@ class FirstTimeWidget extends StatelessWidget {
             setupBloc.add(SetupEvent.startSetup);
           }
           if (state == SetupState.inProgress) {
-            setupBloc.add(SetupEvent.completeSetup);
-            return const CircularProgressIndicator();
+            return const Setup();
           } else if (state == SetupState.completed) {
-            return const Text("Setup Completed");
+            return BlocProvider(
+              create: (context) => MainBloc(),
+              child: const Main(),
+            );
           }
           return Container();
         },
@@ -71,8 +74,3 @@ class FirstTimeWidget extends StatelessWidget {
     );
   }
 }
-
-/*BlocProvider(
-        create: (context) => MainBloc(),
-        child: const Main(),
-      ),*/

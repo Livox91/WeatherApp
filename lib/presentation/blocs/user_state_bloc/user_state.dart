@@ -1,4 +1,5 @@
-import '../../../data/repository/new_user_repository.dart';
+import '../../../data/data_source/shared_pref.dart';
+
 import 'package:bloc/bloc.dart';
 
 enum SetupEvent { startSetup, completeSetup }
@@ -6,22 +7,23 @@ enum SetupEvent { startSetup, completeSetup }
 enum SetupState { initial, inProgress, completed }
 
 class FirstTimeSetupBloc extends Bloc<SetupEvent, SetupState> {
-  final SharedPreferencesRepository repository = SharedPreferencesRepository();
+  final SharedPreferencesApi sharedPref = SharedPreferencesApi();
   FirstTimeSetupBloc() : super(SetupState.initial) {
     on<SetupEvent>((event, emit) => mapEventsToState(event, emit));
   }
 
   void mapEventsToState(SetupEvent e, Emitter<SetupState> emit) async {
     if (e == SetupEvent.startSetup) {
-      emit(SetupState.inProgress);
-      final isFirstTime = await repository.isFirstTimeUser();
+      final isFirstTime = await sharedPref.isFirstTimeUser();
       if (isFirstTime) {
-        print("Hello First Time User");
+        emit(SetupState.inProgress);
+      } else {
+        emit(SetupState.completed);
       }
     }
     if (e == SetupEvent.completeSetup) {
       emit(SetupState.completed);
-      await repository.markSetupCompleted();
+      await sharedPref.markSetupCompleted();
     }
   }
 }
