@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:dart_casing/dart_casing.dart';
+import 'package:flutter_application_1/data/data_source/shared_pref.dart';
 
 import 'main_screen_drawer.dart';
 import 'text_widget.dart';
-import 'divider_widget.dart';
+
+import 'package:flutter_application_1/domain/entities/city_country.dart';
 
 class MenuBtn extends StatelessWidget {
   const MenuBtn({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(30, 20, 0, 0),
-      child: const Icon(
-        Icons.menu,
-        color: Color(0xfff99417),
-        weight: 400,
-      ),
+    return IconButton(
+      onPressed: () {},
+      icon: const Icon(Icons.menu),
     );
   }
 }
@@ -66,72 +63,70 @@ class LColoumn extends StatelessWidget {
   }
 }
 
-class Btn extends StatelessWidget {
-  const Btn({super.key});
+class Btna extends StatefulWidget {
+  final Map<CityCountry, bool> listWidget;
+  const Btna({super.key, required this.listWidget});
 
   @override
+  State<Btna> createState() => _BtnaState();
+}
+
+class _BtnaState extends State<Btna> {
+  @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 20, 20, 0),
-        child: ElevatedButton(
-            style: const ButtonStyle(
-                iconColor: MaterialStatePropertyAll(Color(0xff363062)),
-                backgroundColor: MaterialStatePropertyAll(Color(0xfff99417))),
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const PopUp();
-                  });
-            },
-            child: const Icon(Icons.add)),
+    return IconButton(
+      style: const ButtonStyle(
+        iconColor: MaterialStatePropertyAll(Color(0xfff99417)),
       ),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return PopUpa(
+                listWidget: widget.listWidget,
+              );
+            });
+      },
+      icon: const Icon(Icons.add),
     );
   }
 }
 
-class PopUp extends StatefulWidget {
-  const PopUp({super.key});
+class PopUpa extends StatefulWidget {
+  final Map<CityCountry, bool> listWidget;
+  const PopUpa({super.key, required this.listWidget});
 
   @override
-  State<PopUp> createState() => _PopUpState();
+  State<PopUpa> createState() => _PopUpaState();
 }
 
-class _PopUpState extends State<PopUp> {
-  late final TextEditingController _cityController;
-  late final TextEditingController _countryController;
+class _PopUpaState extends State<PopUpa> {
+  SharedPreferencesApi api = SharedPreferencesApi();
 
-  String? _countryError;
-  String? _cityError;
+  void addWidget(texts, country) {
+    setState(() {
+      if (!dynamicWidget.any((widget) =>
+          widget is Tile &&
+          widget.text1 == "$texts" &&
+          widget.text2 == "$country")) {
+        dynamicWidget.add(Tile(text1: texts, text2: country));
+      }
+    });
+  }
 
-  List<String> countries = ['pakistan', 'india', 'afghanistan', 'uk'];
-  Map<String, List<String>> citiesbyCountry = {
-    "pakistan": ["islamabad", "karachi", "multan"],
-    "india": ["dehli", "hyderabad", "rajasthan"],
-    "afghanistan": ["kabul", "ghazni", "herat"],
-    "uk": ["london", "birmingham", "bristol", "nottingham"]
-  };
-  @override
-  void initState() {
-    _countryController = TextEditingController();
-    _cityController = TextEditingController();
-    super.initState();
+  void removeWidget(texts, country) {
+    setState(() {
+      dynamicWidget.removeWhere((widget) =>
+          widget is Tile &&
+          widget.text1 == "$texts" &&
+          widget.text2 == "$country");
+    });
   }
 
   @override
   void dispose() {
-    _cityController.dispose();
-    _countryController.dispose();
+    api.saveCitiesCountriesStateToSharedPref(widget.listWidget);
     super.dispose();
-  }
-
-  void addWidget(texts, country) {
-    setState(() {
-      dynamicWidget.add(Tile(text1: texts, text2: country));
-      dynamicWidget.add(const RDivider());
-    });
   }
 
   @override
@@ -145,75 +140,29 @@ class _PopUpState extends State<PopUp> {
         height: screenSize.height - 500,
         width: screenSize.width - 100,
         child: Card(
-          color: const Color(0xff363062),
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: MW600F18(text: "Enter City/Country"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _cityController,
-                  decoration: InputDecoration(
-                    labelText: 'City',
-                    border: const UnderlineInputBorder(),
-                    labelStyle: const TextStyle(color: Color(0xfff99417)),
-                    errorText: _cityError,
-                  ),
-                  style: const TextStyle(color: Color(0xfff99417)),
-                  cursorColor: const Color(0xfff99417),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _countryController,
-                  decoration: InputDecoration(
-                    labelText: 'Country',
-                    border: const UnderlineInputBorder(),
-                    errorText: _countryError,
-                    labelStyle: const TextStyle(color: Color(0xfff99417)),
-                  ),
-                  style: const TextStyle(color: Color(0xfff99417)),
-                  cursorColor: const Color(0xfff99417),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                    onPressed: () {
-                      final city = _cityController.text.toLowerCase();
-                      final country = _countryController.text.toLowerCase();
-                      if (country.isEmpty || city.isEmpty) {
-                        setState(() {
-                          _countryError = "Invalid Input";
-                          _cityError = "Invalid Input";
-                        });
-                      } else if (countries.contains(country) &&
-                          citiesbyCountry.containsKey(country) &&
-                          citiesbyCountry[country]!.contains(city)) {
-                        addWidget(Casing.pascalCase(city), country);
-                        setState(() {
-                          _cityError = null;
-                          _countryError = null;
-                        });
-
-                        _cityController.clear();
-                        _countryController.clear();
-                      } else {
-                        setState(() {
-                          _countryError = "Invalid Input";
-                          _cityError = "Invalid Input";
-                        });
-                      }
-                    },
-                    child: const MW600F18(text: "Submit")),
-              ),
-            ],
-          ),
-        ),
+            color: const Color(0xff363062),
+            child: ListView(
+              children: widget.listWidget.keys.map((CityCountry key) {
+                return CheckboxListTile(
+                  title: SText(text: "${key.city},${key.country}"),
+                  value: widget.listWidget[key],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      widget.listWidget[key] = value!;
+                    });
+                    if (value == true) {
+                      setState(() {
+                        addWidget(key.city, key.country);
+                      });
+                    } else {
+                      setState(() {
+                        removeWidget(key.city, key.country);
+                      });
+                    }
+                  },
+                );
+              }).toList(),
+            )),
       ),
     );
   }

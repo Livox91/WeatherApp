@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/data/data_source/shared_pref.dart';
+import 'package:flutter_application_1/domain/entities/city_country.dart';
 //Widgets
 import '../widgets/main_screen_drawer.dart';
 import '../widgets/divider_widget.dart';
@@ -7,23 +9,75 @@ import '../widgets/main_screen_widgets.dart';
 //Domain
 import '../../domain/entities/weather.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final Weather weatherData;
+
   const HomePage({super.key, required this.weatherData});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  SharedPreferencesApi api = SharedPreferencesApi();
+  Map<CityCountry, bool> listWidget = {};
+
+  void addWidget(texts, country) {
+    setState(() {
+      if (!dynamicWidget.any((widget) =>
+          widget is Tile &&
+          widget.text1 == "$texts" &&
+          widget.text2 == "$country")) {
+        dynamicWidget.add(Tile(text1: texts, text2: country));
+      }
+    });
+  }
+
+  void removeWidget(texts, country) {
+    setState(() {
+      dynamicWidget.removeWhere((widget) =>
+          widget is Tile &&
+          widget.text1 == "$texts" &&
+          widget.text2 == "$country");
+    });
+  }
+
+  @override
+  void initState() {
+    api.getCityCountry().then((value) {
+      setState(() {
+        listWidget = value;
+        listWidget.forEach((key, value) {
+          if (value == true) {
+            addWidget(key.city, key.country);
+          } else {
+            removeWidget(key.city, key.country);
+          }
+        });
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const SidePanel(),
-      body: Stack(
-        children: [
-          Screen(
-            weatherData: weatherData,
-          ),
-          const MenuBtn(),
-          const Btn()
-        ],
+      appBar: AppBar(
+        actions: [Btna(listWidget: listWidget)],
+        backgroundColor: const Color(0xff363062),
+        foregroundColor: const Color(0xffF99417),
+        elevation: 0.0,
+        actionsIconTheme: const IconThemeData(
+          color: Color(0xffF99417),
+        ),
       ),
+      body: Screen(weatherData: widget.weatherData),
     );
   }
 }
@@ -35,9 +89,7 @@ class Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      drawer: const Drawer(),
-      body: Container(
+    return Container(
         color: const Color(0xff363062),
         width: screenSize.width,
         height: screenSize.height,
@@ -47,9 +99,7 @@ class Screen extends StatelessWidget {
             UpperSection(weatherData: weatherData),
             LowerSection(weatherData: weatherData),
           ],
-        ),
-      ),
-    );
+        ));
   }
 }
 

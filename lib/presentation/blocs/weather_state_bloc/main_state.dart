@@ -8,8 +8,8 @@ class MainState extends Equatable {
 }
 
 class MainDataState extends MainState {
-  final String currentCity;
-  final String currentCountry;
+  final String? currentCity;
+  final String? currentCountry;
   final Weather currentWeather;
 
   const MainDataState(

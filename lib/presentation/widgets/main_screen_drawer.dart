@@ -10,8 +10,6 @@ List<Widget> dynamicWidget = [
   const DrawerHeader(
     child: DSW400F25(text: "Cities"),
   ),
-  const Tile(text1: "Karachi", text2: "Pakistan"),
-  const RDivider()
 ];
 
 class SidePanel extends StatefulWidget {
@@ -26,9 +24,8 @@ class _SidePanelState extends State<SidePanel> {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: const Color(0xff363062),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 20, 0, 0),
-        child: Column(children: dynamicWidget),
+      child: ListView(
+        children: dynamicWidget,
       ),
     );
   }
@@ -53,10 +50,16 @@ class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) {
     final MainBloc mainBloc = BlocProvider.of<MainBloc>(context);
-    return ListTile(
-        title: MW600F18(text: widget.text1),
-        onTap: () {
-          mainBloc.add(MainEvent(widget.text1, widget.text2));
-        });
+    return Column(
+      children: [
+        ListTile(
+            title: MW600F18(text: widget.text1),
+            onTap: () {
+              mainBloc.add(MainEvent(widget.text1, widget.text2));
+              Navigator.pop(context);
+            }),
+        const RDivider()
+      ],
+    );
   }
 }

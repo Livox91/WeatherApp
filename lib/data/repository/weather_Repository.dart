@@ -3,7 +3,7 @@ import '../data_source/weather_api.dart';
 
 class WeatherRepository {
   static Future<Weather> getWeatherData(
-      {String city = "Karachi", String country = "pk"}) async {
+      {String? city = "Karachi", String? country = "pk"}) async {
     final APIData = await WeatherAPI().getWeatherData(city, country);
 
     var weatherDet = APIData['main'];
